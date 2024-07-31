@@ -1,0 +1,53 @@
+﻿<Window x:Class="cvs.EditorWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:cvs"
+        mc:Ignorable="d"
+        Title="EditorWindow" Height="450" Width="1000">
+    <StackPanel>
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="100"/>
+                <ColumnDefinition Width="60"/>
+            </Grid.ColumnDefinitions>
+            <TextBox Grid.Column="0" Text="{Binding sheet.EstablishmentInfo.Name}"/>
+            <TextBox Grid.Column="1" Text="{Binding sheet.EstablishmentInfo.ID}"/>
+            <TextBox Grid.Column="2" Text="{Binding sheet.WeekNumber}"/>
+        </Grid>
+
+        <DataGrid ItemsSource="{Binding sheet.Tasks}" AutoGenerateColumns="False" CanUserAddRows="False">
+            <DataGrid.Resources>
+                <DataTemplate x:Key="DateTemplate">
+                    <DatePicker SelectedDate="{Binding Date}"/>
+                </DataTemplate>
+                <DataTemplate x:Key="NamesTemplate">
+                    <TextBox AcceptsReturn="True"/>
+                </DataTemplate>
+                <DataTemplate x:Key="ShiftTemplate">
+                    <ComboBox SelectedValue="{Binding Shift}" ItemsSource="{Binding ShiftOptions}" />
+                </DataTemplate>
+                <DataTemplate x:Key="TimeInTemplate">
+                    <DatePicker SelectedDate="{Binding TimeIn, StringFormat=hh:mm}"/>
+                </DataTemplate>
+                <DataTemplate x:Key="TimeOutTemplate">
+                    <DatePicker SelectedDate="{Binding TimeOut, StringFormat=hh:mm}"/>
+                </DataTemplate>
+            </DataGrid.Resources>
+            <DataGrid.Columns>
+                <DataGridTemplateColumn Header="Date" CellTemplate="{StaticResource DateTemplate}"/>
+                <DataGridTemplateColumn Header="Shift" CellTemplate="{StaticResource ShiftTemplate}"/>
+                <DataGridTemplateColumn Header="Time In" CellTemplate="{StaticResource TimeInTemplate}"/>
+                <DataGridTemplateColumn Header="Time In" CellTemplate="{StaticResource TimeOutTemplate}"/>
+                <DataGridTemplateColumn Header="Name(s)" CellTemplate="{StaticResource NamesTemplate}"/>
+            </DataGrid.Columns>
+        </DataGrid>
+
+        <Button Grid.Row="1" Content="Serialize" Click="Button_Click"/>
+    </StackPanel>
+</Window>
