@@ -23,11 +23,22 @@ namespace cvs.Models
         public string FormDataVersion { get; set; }
         public string TemplateId { get; set; }
         public string Revision { get; set; }
+        public string RevisionString { get; set; }
         public string Name { get; set; }
 
         public DateTime ReportIssueDate { get; set; } = DateTime.MinValue;
         public string ReportInspector { get; set; }
         public string InspectorSignature { get; set; }
+
+        public int CompletedRowCount
+        {
+            get
+            {
+                return 21;
+            }
+        }
+        public int WorksheetCount { get; set; } = 1;
+        public int PageCount { get; set; } = 1;
 
         public CvsSheet()
         {
@@ -55,6 +66,7 @@ namespace cvs.Models
             sheet.FormDataVersion = "2";
             sheet.TemplateId = "CFIA / ACIA 5470 E";
             sheet.Revision = "69.11.2";
+            sheet.RevisionString = "Revision / Révision : 1.5";
             sheet.Name = "Verification worksheet & report";
 
             sheet.WeekNumber = WeekNumberCalculator.CalcWeekNumber(date);
@@ -84,7 +96,7 @@ namespace cvs.Models
                         ),
                     ActivityCode = "9.1.12",
                     TaskRating = "A",
-                    ActvitityConducted = "",
+                    ActivityConducted = "",
                     ItemsNeedingCorrection = "",
                     HoursSpent = 0,
                     MinutesSpent = 30,
@@ -108,7 +120,7 @@ namespace cvs.Models
                         ),
                     ActivityCode = "9.1.13",
                     TaskRating = "A",
-                    ActvitityConducted = "Kill did not go past 18:00",
+                    ActivityConducted = "Kill did not go past 18:00",
                     ItemsNeedingCorrection = "",
                     HoursSpent = 0,
                     MinutesSpent = 30,
@@ -371,15 +383,60 @@ namespace cvs.Models
 
             addNewXmlNode(xmlDoc, instanceNode, "establishment_no1", sheet.EstablishmentInfo.ID);
             addNewXmlNode(xmlDoc, instanceNode, "establishment_name1", sheet.EstablishmentInfo.Name);
-            addNewXmlNode(xmlDoc, instanceNode, "report_issued_date",
-                SerializeDate(sheet.ReportIssueDate, dateFormat));
-            addNewXmlNode(xmlDoc, instanceNode, "report_inspector", sheet.ReportInspector);
-            // These (below) are wrong. Check the O.G XML
-            addNewXmlNode(xmlDoc, instanceNode, "inspector_signature3", sheet.InspectorSignature);
-            addNewXmlNode(xmlDoc, instanceNode, "inspector_signature2", sheet.InspectorSignature);
-            addNewXmlNode(xmlDoc, instanceNode, "inspector_signature", sheet.InspectorSignature);
-            addNewXmlNode(xmlDoc, instanceNode, "report_inspector2", sheet.ReportInspector);
+            addNewXmlNode(xmlDoc, instanceNode, "report_issued_date", string.Empty);
+            addNewXmlNode(xmlDoc, instanceNode, "report_inspector", string.Empty);
+            addNewXmlNode(xmlDoc, instanceNode, "inspector_signature3", string.Empty);
+            addNewXmlNode(xmlDoc, instanceNode, "report_inspector2", string.Empty);
+            addNewXmlNode(xmlDoc, instanceNode, "operator_signature", string.Empty);
             addNewXmlNode(xmlDoc, instanceNode, "facility_name_lu", sheet.EstablishmentInfo.Name);
+            addNewXmlNode(xmlDoc, instanceNode, "address1_lu", sheet.EstablishmentInfo.Address);
+            addNewXmlNode(xmlDoc, instanceNode, "address2_lu", String.Empty);
+            addNewXmlNode(xmlDoc, instanceNode, "postal_code_lu", sheet.EstablishmentInfo.PostalCode);
+            addNewXmlNode(xmlDoc, instanceNode, "city_lu", sheet.EstablishmentInfo.Address);
+            addNewXmlNode(xmlDoc, instanceNode, "province_lu", sheet.EstablishmentInfo.Province);
+            addNewXmlNode(xmlDoc, instanceNode, "country_lu", sheet.EstablishmentInfo.Country);
+
+            int repCount = 8;
+            for (int n =0; n < repCount; ++n)
+            {
+                int index = n + 1;
+                var table20Node = addNewXmlNode(xmlDoc, instanceNode, "table20", String.Empty);
+                addNodeAttribute(xmlDoc, table20Node, "index", index.ToString());
+
+                addNewXmlNode(xmlDoc, table20Node, "Informed_PrintPage", String.Empty);
+                addNewXmlNode(xmlDoc, table20Node, "page_num", index.ToString());
+            }
+
+            RepeatSimpleNode(xmlDoc, instanceNode,
+                "number_rows_completed", sheet.CompletedRowCount.ToString(), null, null,
+                "number_pages_worksheet", sheet.PageCount.ToString(), null, null,
+                "Cell41", String.Empty, null, null,
+                "number_rows_completed1", sheet.CompletedRowCount.ToString(), null, null,
+                "number_pages_report", sheet.PageCount.ToString(), null, null,
+                "Cell42", String.Empty, null, null,
+                "print_instructions_ws", 0.ToString(), null, null,
+                "print_instructions_rep", 0.ToString(), null, null,
+                "print_instructions_ws_rep", 0.ToString(), null, null,
+                "print_worksheet", 0.ToString(), null, null,
+                "print_report", 0.ToString(), null, null,
+                "printsettings_tab", string.Empty, null, null,
+                "print_control", "no print", null, null,
+                "revision_no", sheet.RevisionString, null, null,
+                "revision_no1", sheet.RevisionString, null, null,
+                "shift_1", String.Empty, null, null,
+                "shift_2", String.Empty, null, null,
+                "Cell33", String.Empty, null, null,
+                "Cell34", 0.ToString(), null, null,
+                "Cell35", 0.ToString(), null, null,
+                "Cell36", 0.ToString(), null, null,
+                "Cell37", 0.ToString(), null, null,
+                "Cell38", 0.ToString(), null, null,
+                "Cell39", 0.ToString(), null, null,
+                "Cell40", 0.ToString(), null, null,
+                "week_num1", sheet.WeekNumber.ToString(), null, null,
+                "Cell49", 1.ToString(), null, null,
+                "stickynotes", String.Empty, null, null
+                );
 
             return xmlDoc.InnerXml;
         }

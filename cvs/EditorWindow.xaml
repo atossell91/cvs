@@ -5,11 +5,11 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:cvs"
         mc:Ignorable="d"
-        Title="EditorWindow" Height="450" Width="1000">
-    <StackPanel>
+        Title="EditorWindow" SizeToContent="Height" Width="1000">
+    <StackPanel Height="auto" MinHeight="100">
         <Grid>
             <Grid.RowDefinitions>
-                <RowDefinition Height="*"/>
+                <RowDefinition Height="auto"/>
             </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*"/>
@@ -23,31 +23,60 @@
 
         <DataGrid ItemsSource="{Binding sheet.Tasks}" AutoGenerateColumns="False" CanUserAddRows="False">
             <DataGrid.Resources>
+                <StaticResource x:Key="bbw"/>
                 <DataTemplate x:Key="DateTemplate">
-                    <DatePicker SelectedDate="{Binding Date}"/>
+                    <DatePicker SelectedDate="{Binding Date}" VerticalContentAlignment="Center"/>
                 </DataTemplate>
                 <DataTemplate x:Key="NamesTemplate">
-                    <TextBox AcceptsReturn="True"/>
+                    <TextBox AcceptsReturn="True" Text="{Binding InspectorNames}"/>
                 </DataTemplate>
                 <DataTemplate x:Key="ShiftTemplate">
                     <ComboBox SelectedValue="{Binding Shift}" ItemsSource="{Binding ShiftOptions}" />
                 </DataTemplate>
                 <DataTemplate x:Key="TimeInTemplate">
-                    <DatePicker SelectedDate="{Binding TimeIn, StringFormat=hh:mm}"/>
+                    <TextBox Text="{Binding TimeIn, StringFormat=hh:mm}"/>
                 </DataTemplate>
                 <DataTemplate x:Key="TimeOutTemplate">
-                    <DatePicker SelectedDate="{Binding TimeOut, StringFormat=hh:mm}"/>
+                    <TextBox Text="{Binding TimeOut, StringFormat=hh:mm}"/>
                 </DataTemplate>
+                <DataTemplate x:Key="ActivityCodeTemplate">
+                    <TextBox Text="{Binding ActivityCode}"/>
+                </DataTemplate>
+                <DataTemplate x:Key="TaskRatingTemplate">
+                    <ComboBox SelectedValue="{Binding TaskRating}" ItemsSource="{Binding TaskRatingOptions}" />
+                </DataTemplate>
+                <DataTemplate x:Key="ActivityConductedTemplate">
+                    <TextBox Text="{Binding ActivityConducted}"/>
+                </DataTemplate>
+                <DataTemplate x:Key="HoursSpentTemplate">
+                    <TextBox Text="{Binding HoursSpent}"/>
+                </DataTemplate>
+                <DataTemplate x:Key="MinutesSpentTemplate">
+                    <TextBox Text="{Binding MinutesSpent}"/>
+                </DataTemplate>
+                
+                <Style x:Key="GridRowStyle" TargetType="DataGridCell">
+                    <Setter Property="MinHeight" Value="40"/>
+                </Style>
+                
+                <Style TargetType="DataGridRow">
+                    <Setter Property="Margin" Value="0 0"/>
+                </Style>
             </DataGrid.Resources>
             <DataGrid.Columns>
-                <DataGridTemplateColumn Header="Date" CellTemplate="{StaticResource DateTemplate}"/>
-                <DataGridTemplateColumn Header="Shift" CellTemplate="{StaticResource ShiftTemplate}"/>
-                <DataGridTemplateColumn Header="Time In" CellTemplate="{StaticResource TimeInTemplate}"/>
-                <DataGridTemplateColumn Header="Time In" CellTemplate="{StaticResource TimeOutTemplate}"/>
-                <DataGridTemplateColumn Header="Name(s)" CellTemplate="{StaticResource NamesTemplate}"/>
+                <DataGridTemplateColumn Header="Date" CellTemplate="{StaticResource DateTemplate}" CellStyle="{StaticResource GridRowStyle}"/>
+                <DataGridTemplateColumn Header="Shift" CellTemplate="{StaticResource ShiftTemplate}" CellStyle="{StaticResource GridRowStyle}"/>
+                <DataGridTemplateColumn Header="Time In" CellTemplate="{StaticResource TimeInTemplate}" CellStyle="{StaticResource GridRowStyle}"/>
+                <DataGridTemplateColumn Header="Time Out" CellTemplate="{StaticResource TimeOutTemplate}" CellStyle="{StaticResource GridRowStyle}"/>
+                <DataGridTemplateColumn Header="Activity Code" CellTemplate="{StaticResource ActivityCodeTemplate}" CellStyle="{StaticResource GridRowStyle}"/>
+                <DataGridTemplateColumn Header="Task Rating" CellTemplate="{StaticResource TaskRatingTemplate}" CellStyle="{StaticResource GridRowStyle}"/>
+                <DataGridTemplateColumn Header="Activity Conducted" CellTemplate="{StaticResource ActivityConductedTemplate}" Width="*" CellStyle="{StaticResource GridRowStyle}"/>
+                <DataGridTemplateColumn Header="Hours Spent" CellTemplate="{StaticResource HoursSpentTemplate}" CellStyle="{StaticResource GridRowStyle}"/>
+                <DataGridTemplateColumn Header="Minutes Spent" CellTemplate="{StaticResource MinutesSpentTemplate}" CellStyle="{StaticResource GridRowStyle}"/>
+                <DataGridTemplateColumn Header="Name(s)" CellTemplate="{StaticResource NamesTemplate}" MinWidth="120" CellStyle="{StaticResource GridRowStyle}"/>
             </DataGrid.Columns>
         </DataGrid>
 
-        <Button Grid.Row="1" Content="Serialize" Click="Button_Click"/>
+        <Button Grid.Row="1" Content="Serialize" Click="Button_Click" Height="60"/>
     </StackPanel>
 </Window>

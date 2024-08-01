@@ -58,6 +58,7 @@
     <Compile Include="Exceptions\BadArrayLengthException.cs" />
     <Compile Include="Models\CvsSheet.cs" />
     <Compile Include="Models\EstablishmentInfo.cs" />
+    <Compile Include="ValidationRules\TimeStringValidator.cs" />
     <Compile Include="ViewModels\TaskEditorViewModel.cs" />
     <Page Include="EditorWindow.xaml">
       <SubType>Designer</SubType>
