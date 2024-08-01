@@ -16,9 +16,11 @@ namespace cvs.Models
     {
         public EstablishmentInfo EstablishmentInfo { get; set; }
 
-        public int WeekNumber { get; set; }
-        public List<CvsTask> tasks { get; private set; } = new List<CvsTask>();
-        public ObservableCollection<CvsTask> Tasks { get; set; }
+        public int WeekNumber { 
+            get;
+            set;
+        }
+        public ObservableCollection<CvsTask> Tasks { get; set; } = new ObservableCollection<CvsTask>();
 
         public string FormDataVersion { get; set; }
         public string TemplateId { get; set; }
@@ -29,6 +31,7 @@ namespace cvs.Models
         public DateTime ReportIssueDate { get; set; } = DateTime.MinValue;
         public string ReportInspector { get; set; }
         public string InspectorSignature { get; set; }
+        public int MemAddress { get; private set; }
 
         public int CompletedRowCount
         {
@@ -42,7 +45,11 @@ namespace cvs.Models
 
         public CvsSheet()
         {
-            Tasks = new ObservableCollection<CvsTask>(tasks);
+            unsafe
+            {
+                CvsSheet v = this;
+                MemAddress = (int)&v;
+            }
         }
 
     }

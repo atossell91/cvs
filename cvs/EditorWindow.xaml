@@ -23,7 +23,6 @@
 
         <DataGrid ItemsSource="{Binding sheet.Tasks}" AutoGenerateColumns="False" CanUserAddRows="False">
             <DataGrid.Resources>
-                <StaticResource x:Key="bbw"/>
                 <DataTemplate x:Key="DateTemplate">
                     <DatePicker SelectedDate="{Binding Date}" VerticalContentAlignment="Center"/>
                 </DataTemplate>
@@ -34,10 +33,10 @@
                     <ComboBox SelectedValue="{Binding Shift}" ItemsSource="{Binding ShiftOptions}" />
                 </DataTemplate>
                 <DataTemplate x:Key="TimeInTemplate">
-                    <TextBox Text="{Binding TimeIn, StringFormat=hh:mm}"/>
+                    <TextBox Text="{Binding TimeIn, StringFormat=hh:mm}" PreviewTextInput="TextBox_PreviewTextInput" LostFocus="TextBox_LostFocus"/>
                 </DataTemplate>
                 <DataTemplate x:Key="TimeOutTemplate">
-                    <TextBox Text="{Binding TimeOut, StringFormat=hh:mm}"/>
+                    <TextBox Text="{Binding TimeOut, StringFormat=hh:mm}" PreviewTextInput="TextBox_PreviewTextInput" LostFocus="TextBox_LostFocus"/>
                 </DataTemplate>
                 <DataTemplate x:Key="ActivityCodeTemplate">
                     <TextBox Text="{Binding ActivityCode}"/>
