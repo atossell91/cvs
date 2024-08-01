@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Configuration;
 using System.Data;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -24,7 +25,9 @@ namespace cvs
             {
                 case (WindowType.CreateNew):
                     TaskEditorViewModel vm = new TaskEditorViewModel();
-                    vm.Display();
+                    EditorWindow window = new EditorWindow(vm);
+                    window.ShowDialog();
+                    //Comment
                     break;
                 case (WindowType.LoadExisting):
                     break;

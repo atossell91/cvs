@@ -28,22 +28,18 @@ namespace cvs
             InitializeComponent();
         }
 
-        private void Button_Click(object sender, RoutedEventArgs e)
+        public EditorWindow(TaskEditorViewModel viewModel) : this()
         {
-            TaskEditorViewModel vm = (TaskEditorViewModel)this.DataContext;
-            CvsSheet sheet = vm.sheet;
-            File.WriteAllText("C:\\Users\\atoss\\Programming\\comparer\\output.txt", CvsSheetXmlSerializer.Serialize(sheet));
+            DataContext = viewModel;
         }
 
-        private void TextBox_LostFocus(object sender, RoutedEventArgs e)
+        private void Button_Click(object sender, RoutedEventArgs e)
         {
-            TextBox tb = (TextBox)sender;
-            string text = tb.Text;
-
-            if (!Regex.IsMatch(text, @"^(([0-1]?[0-9])|(2[0-3])):[0-5][0-9]$"))
-            {
-                tb.Text = String.Empty;
-            }
+            TaskEditorViewModel viewModel = (TaskEditorViewModel)DataContext;
+            string text = CvsSheetXmlSerializer.Serialize(viewModel.sheet);
+             //TaskEditorViewModel vm = (TaskEditorViewModel)this.DataContext;
+            //CvsSheet sheet = vm.sheet;
+            //File.WriteAllText("C:\\Users\\atoss\\Programming\\comparer\\output.txt", CvsSheetXmlSerializer.Serialize(sheet));
         }
 
         private void TextBox_PreviewTextInput(object sender, TextCompositionEventArgs e)

@@ -20,38 +20,37 @@
             <TextBox Grid.Column="1" Text="{Binding sheet.EstablishmentInfo.ID}"/>
             <TextBox Grid.Column="2" Text="{Binding sheet.WeekNumber}"/>
         </Grid>
-
         <DataGrid ItemsSource="{Binding sheet.Tasks}" AutoGenerateColumns="False" CanUserAddRows="False">
             <DataGrid.Resources>
                 <DataTemplate x:Key="DateTemplate">
-                    <DatePicker SelectedDate="{Binding Date}" VerticalContentAlignment="Center"/>
+                    <DatePicker SelectedDate="{Binding Date, Mode=TwoWay, UpdateSourceTrigger=LostFocus}" VerticalContentAlignment="Center"/>
                 </DataTemplate>
                 <DataTemplate x:Key="NamesTemplate">
-                    <TextBox AcceptsReturn="True" Text="{Binding InspectorNames}"/>
+                    <TextBox AcceptsReturn="True" Text="{Binding InspectorNames, Mode=TwoWay, UpdateSourceTrigger=LostFocus}"/>
                 </DataTemplate>
                 <DataTemplate x:Key="ShiftTemplate">
-                    <ComboBox SelectedValue="{Binding Shift}" ItemsSource="{Binding ShiftOptions}" />
+                    <ComboBox SelectedValue="{Binding Path=Shift, Mode=TwoWay, UpdateSourceTrigger=LostFocus}" ItemsSource="{Binding ShiftOptions}" />
                 </DataTemplate>
                 <DataTemplate x:Key="TimeInTemplate">
-                    <TextBox Text="{Binding TimeIn, StringFormat=hh:mm}" PreviewTextInput="TextBox_PreviewTextInput" LostFocus="TextBox_LostFocus"/>
+                    <TextBox Text="{Binding TimeIn, Mode=TwoWay, UpdateSourceTrigger=LostFocus, StringFormat=HH:mm}" PreviewTextInput="TextBox_PreviewTextInput"/>
                 </DataTemplate>
                 <DataTemplate x:Key="TimeOutTemplate">
-                    <TextBox Text="{Binding TimeOut, StringFormat=hh:mm}" PreviewTextInput="TextBox_PreviewTextInput" LostFocus="TextBox_LostFocus"/>
+                    <TextBox Text="{Binding TimeOut, UpdateSourceTrigger=LostFocus, StringFormat=HH:mm}" PreviewTextInput="TextBox_PreviewTextInput"/>
                 </DataTemplate>
                 <DataTemplate x:Key="ActivityCodeTemplate">
-                    <TextBox Text="{Binding ActivityCode}"/>
+                    <TextBox Text="{Binding ActivityCode, Mode=TwoWay, UpdateSourceTrigger=LostFocus}"/>
                 </DataTemplate>
                 <DataTemplate x:Key="TaskRatingTemplate">
-                    <ComboBox SelectedValue="{Binding TaskRating}" ItemsSource="{Binding TaskRatingOptions}" />
+                    <ComboBox SelectedValue="{Binding TaskRating, UpdateSourceTrigger=LostFocus}" ItemsSource="{Binding TaskRatingOptions}" />
                 </DataTemplate>
                 <DataTemplate x:Key="ActivityConductedTemplate">
-                    <TextBox Text="{Binding ActivityConducted}"/>
+                    <TextBox Text="{Binding ActivityConducted, UpdateSourceTrigger=LostFocus}"/>
                 </DataTemplate>
                 <DataTemplate x:Key="HoursSpentTemplate">
-                    <TextBox Text="{Binding HoursSpent}"/>
+                    <TextBox Text="{Binding HoursSpent, UpdateSourceTrigger=LostFocus}"/>
                 </DataTemplate>
                 <DataTemplate x:Key="MinutesSpentTemplate">
-                    <TextBox Text="{Binding MinutesSpent}"/>
+                    <TextBox Text="{Binding MinutesSpent, UpdateSourceTrigger=LostFocus}"/>
                 </DataTemplate>
                 
                 <Style x:Key="GridRowStyle" TargetType="DataGridCell">
@@ -75,7 +74,6 @@
                 <DataGridTemplateColumn Header="Name(s)" CellTemplate="{StaticResource NamesTemplate}" MinWidth="120" CellStyle="{StaticResource GridRowStyle}"/>
             </DataGrid.Columns>
         </DataGrid>
-
         <Button Grid.Row="1" Content="Serialize" Click="Button_Click" Height="60"/>
     </StackPanel>
 </Window>
