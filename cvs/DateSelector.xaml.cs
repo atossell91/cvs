@@ -12,35 +12,22 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 
-namespace cvs
+namespace cvs.ViewModels
 {
-    public enum WindowType
-    {
-        CreateNew,
-        LoadExisting,
-        None
-    }
-
     /// <summary>
-    /// Interaction logic for MainMenu.xaml
+    /// Interaction logic for DateSelector.xaml
     /// </summary>
-    public partial class MainMenu : Window
+    public partial class DateSelector : Window
     {
-        public WindowType SelectedWindow { get; set; } = WindowType.None;
-        public MainMenu()
+        public DateTime Date { get; set; } = DateTime.Now;
+        public DateSelector()
         {
             InitializeComponent();
+            DataContext = this;
         }
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
-            SelectedWindow = WindowType.CreateNew;
-            this.Hide();
-        }
-
-        private void Button_Click_1(object sender, RoutedEventArgs e)
-        {
-            SelectedWindow = WindowType.LoadExisting;
             this.Hide();
         }
     }

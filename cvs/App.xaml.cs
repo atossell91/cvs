@@ -1,8 +1,11 @@
-﻿using cvs.ViewModels;
+﻿using cvs.Models;
+using cvs.ViewModels;
+using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Data;
+using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -16,23 +19,51 @@ namespace cvs
     /// </summary>
     public partial class App : Application
     {
+        public CvsSheet LoadExistingSheet()
+        {
+            CvsSheet sheet = null;
+            OpenFileDialog ofd = new OpenFileDialog();
+            ofd.Filter = "XML Files|*.xml|All Files|*.*";
+            if((bool)ofd.ShowDialog())
+            {
+                sheet = CvsSheetXmlSerializer.Deserialize(ofd.FileName);
+            }
+
+            return sheet;
+        }
+
+        public CvsSheet CreateNewSheet()
+        {
+            DateSelector dateSelector = new DateSelector();
+            dateSelector.ShowDialog();
+
+            CvsSheet sheet = CvsSheetFactory.Create("599", "K&R Poultry", dateSelector.Date);
+
+            return sheet;
+        }
         App()
         {
+
+            CvsSheet sheet = null;
+
             MainMenu menu = new MainMenu();
             menu.ShowDialog();
 
-            switch (menu.SelectedWindow)
+            switch(menu.SelectedWindow)
             {
-                case (WindowType.CreateNew):
-                    TaskEditorViewModel vm = new TaskEditorViewModel();
-                    EditorWindow window = new EditorWindow(vm);
-                    window.ShowDialog();
-                    //Comment
+                case WindowType.LoadExisting:
+                    sheet = LoadExistingSheet();
                     break;
-                case (WindowType.LoadExisting):
+                case WindowType.CreateNew:
+                    sheet = CreateNewSheet();
                     break;
-                default:
-                    break;
+            }
+
+            if (sheet != null)
+            {
+                TaskEditorViewModel taskEditorViewModel = new TaskEditorViewModel(sheet);
+                EditorWindow editorWindow = new EditorWindow(taskEditorViewModel);
+                editorWindow.ShowDialog();
             }
 
             this.Shutdown();

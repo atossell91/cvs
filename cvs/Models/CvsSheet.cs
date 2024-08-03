@@ -2,6 +2,9 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
+using System.Globalization;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -16,16 +19,10 @@ namespace cvs.Models
     {
         public EstablishmentInfo EstablishmentInfo { get; set; }
 
-        public int WeekNumber { 
-            get;
-            set;
-        }
+        public int WeekNumber { get; set; }
         public ObservableCollection<CvsTask> Tasks { get; set; } = new ObservableCollection<CvsTask>();
 
-        public string FormDataVersion { 
-            get; 
-            set;
-        }
+        public string FormDataVersion { get; set; }
         public string TemplateId { get; set; }
         public string Revision { get; set; }
         public string RevisionString { get; set; }
@@ -34,19 +31,6 @@ namespace cvs.Models
         public DateTime ReportIssueDate { get; set; } = DateTime.MinValue;
         public string ReportInspector { get; set; }
         public string InspectorSignature { get; set; }
-        public int MemAddress
-        {
-            get
-            {
-                int addr = 0;
-                unsafe
-                {
-                    var obj = this;
-                    addr = (int)&obj;
-                }
-                return addr;
-            }
-        }
 
         public int CompletedRowCount
         {
@@ -99,20 +83,10 @@ namespace cvs.Models
                 {
                     Date = currentDate,
                     Shift = 1,
-                    TimeIn = new DateTime(
-                        currentDate.Year,
-                        currentDate.Month,
-                        currentDate.Day,
-                        6, 0, 0
-                        ),
-                    TimeOut = new DateTime(
-                        currentDate.Year,
-                        currentDate.Month,
-                        currentDate.Day,
-                        14, 0, 0
-                        ),
+                    TimeIn = new TimeSpan(6, 0, 0),
+                    TimeOut = new TimeSpan(14, 0, 0),
                     ActivityCode = "9.1.12",
-                    TaskRating = "A",
+                    TaskRating = "C",
                     ActivityConducted = "",
                     ItemsNeedingCorrection = "",
                     HoursSpent = 0,
@@ -123,20 +97,10 @@ namespace cvs.Models
                 {
                     Date = currentDate,
                     Shift = 2,
-                    TimeIn = new DateTime(
-                        currentDate.Year,
-                        currentDate.Month,
-                        currentDate.Day,
-                        11, 0, 0
-                        ),
-                    TimeOut = new DateTime(
-                        currentDate.Year,
-                        currentDate.Month,
-                        currentDate.Day,
-                        19, 0, 0
-                        ),
+                    TimeIn = new TimeSpan(11, 0, 0),
+                    TimeOut = new TimeSpan(19, 0, 0),
                     ActivityCode = "9.1.13",
-                    TaskRating = "A",
+                    TaskRating = "C",
                     ActivityConducted = "Kill did not go past 18:00",
                     ItemsNeedingCorrection = "",
                     HoursSpent = 0,
@@ -170,7 +134,7 @@ namespace cvs.Models
         private static void addNodeAttribute(XmlDocument doc, XmlElement node, string name, string value)
         {
             var attrib = doc.CreateAttribute(name);
-            attrib.Value = value;
+            attrib.InnerText = value;
             node.Attributes.Append(attrib);
         }
 
@@ -212,10 +176,10 @@ namespace cvs.Models
             }
         }
 
-        public static string Serialize(CvsSheet sheet )
+        public static string Serialize(CvsSheet sheet)
         {
             string dateFormat = "yyyy-MM-dd";
-            string timeFormat = "HH:mm:ss";
+            string timeFormat = "hh\\:mm";
 
             XmlDocument xmlDoc = new XmlDocument();
             //XmlElement xmlRoot = xmlDoc.CreateElement("root");
@@ -388,8 +352,9 @@ namespace cvs.Models
                 addNewXmlNode(xmlDoc, instanceElem, "time_out", task.TimeOut.ToString(timeFormat));
                 addNewXmlNode(xmlDoc, instanceElem, "task_num", task.ActivityCode);
                 addNewXmlNode(xmlDoc, instanceElem, "task_rating", task.TaskRating);
-                addNewXmlNode(xmlDoc, instanceElem, "activities", String.Empty);
+                addNewXmlNode(xmlDoc, instanceElem, "activities", task.ActivityConducted);
                 addNewXmlNode(xmlDoc, instanceElem, "items_req_attn", task.ItemsNeedingCorrection);
+                // rowcount_info (below) used to be set to the value of Task.ActivityConducted
                 addNewXmlNode(xmlDoc, instanceElem, "rowcount_info", String.Empty);
                 addNewXmlNode(xmlDoc, instanceElem, "hours", task.HoursSpent.ToString());
                 addNewXmlNode(xmlDoc, instanceElem, "minutes", task.MinutesSpent.ToString());
@@ -456,6 +421,99 @@ namespace cvs.Models
                 );
 
             return xmlDoc.InnerXml;
+        }
+
+        private static CvsTask deserializeTask(XmlNode taskNode)
+        {
+            DateTime date;
+            if (!DateTime.TryParse(taskNode["visit_date"].InnerText, out date)) { }
+
+            int shift;
+            if (!int.TryParse(taskNode["shift"].InnerText, out shift)) { }
+
+            TimeSpan timeIn;
+            if (!TimeSpan.TryParse(taskNode["time_in"].InnerText, out timeIn)) {
+                Debug.WriteLine("Time In Parse failed");
+            }
+
+            TimeSpan timeOut;
+            if (!TimeSpan.TryParse(taskNode["time_out"].InnerText, out timeOut))
+            {
+                Debug.WriteLine("Time Out Parse failed");
+            }
+
+            string activityCode = taskNode["task_num"].InnerText;
+
+            string taskRating = taskNode["task_rating"].InnerText;
+
+            string activityConducted = taskNode["activities"].InnerText;
+
+            string itemsNeedingCorrection = taskNode["items_req_attn"].InnerText;
+
+            int hours;
+            if (!int.TryParse(taskNode["hours"].InnerText, out hours)) { }
+
+            int minutes;
+            if (!int.TryParse(taskNode["minutes"].InnerText, out minutes)) { }
+
+            string inspectorNames = taskNode["inspector_name"].InnerText;
+
+            CvsTask task = new CvsTask()
+            {
+                Date = date,
+                Shift = shift,
+                TimeIn = timeIn,
+                TimeOut = timeOut,
+                ActivityCode = activityCode,
+                TaskRating = taskRating,
+                ActivityConducted = activityConducted,
+                ItemsNeedingCorrection = itemsNeedingCorrection,
+                HoursSpent = hours,
+                MinutesSpent = minutes,
+                InspectorNames = inspectorNames
+            };
+
+            return task;
+        }
+
+        public static CvsSheet Deserialize(string filePath)
+        {
+            CvsSheet sheet = new CvsSheet();
+
+            string text = File.ReadAllText(filePath);
+            XmlDocument xd = new XmlDocument();
+            xd.LoadXml(text);
+
+            var templateNode = xd.SelectSingleNode("formData/shana/template");
+            sheet.FormDataVersion = xd.SelectSingleNode("formData/@version").Value;
+            sheet.TemplateId = templateNode.Attributes["id"].Value;
+            sheet.Revision = templateNode.Attributes["rev"].Value;
+            sheet.Name = templateNode.Attributes["name"].Value;
+
+            EstablishmentInfo establishmentInfo = new EstablishmentInfo();
+            establishmentInfo.ID = xd.SelectSingleNode("/formData/instance/establishment_no").InnerText;
+            establishmentInfo.Name = xd.SelectSingleNode("/formData/instance/establishment_name").InnerText;
+            establishmentInfo.Address = xd.SelectSingleNode("/formData/instance/address1_lu").InnerText;
+            establishmentInfo.PostalCode = xd.SelectSingleNode("/formData/instance/postal_code_lu").InnerText;
+            establishmentInfo.City = xd.SelectSingleNode("/formData/instance/city_lu").InnerText;
+            establishmentInfo.Province = xd.SelectSingleNode("/formData/instance/province_lu").InnerText;
+            establishmentInfo.Country = xd.SelectSingleNode("/formData/instance/country_lu").InnerText;
+
+            sheet.EstablishmentInfo = establishmentInfo;
+
+            int weekNum;
+            if (!int.TryParse(xd.SelectSingleNode("/formData/instance/week_num").InnerText, out weekNum)) { }
+            else { sheet.WeekNumber = weekNum; }
+
+            sheet.RevisionString = xd.SelectSingleNode("formData/instance/revision_no").InnerText;
+            
+            var taskNodes = xd.SelectNodes("formData/instance/table4");
+            foreach (XmlNode node in taskNodes)
+            {
+                sheet.Tasks.Add(deserializeTask(node));
+            }
+
+            return sheet;
         }
     }
 }

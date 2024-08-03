@@ -5,9 +5,14 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:cvs"
         mc:Ignorable="d"
-        Title="MainMenu" Height="100" Width="200">
-    <StackPanel>
-        <Button Click="Button_Click">Clicky!</Button>
-        <Button Click="Button_Click_1">Other Clicky!</Button>
+        Title="MainMenu" SizeToContent="WidthAndHeight">
+    <StackPanel Margin="5 10">
+        <StackPanel.Resources>
+            <Style TargetType="Button">
+                <Setter Property="Margin" Value="0 2"/>
+            </Style>
+        </StackPanel.Resources>
+        <Button Content="Create new sheet" Click="Button_Click"/>
+        <Button Content="Load existing file (XML)" Click="Button_Click_1"/>
     </StackPanel>
 </Window>

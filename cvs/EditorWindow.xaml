@@ -28,14 +28,14 @@
                 <DataTemplate x:Key="NamesTemplate">
                     <TextBox AcceptsReturn="True" Text="{Binding InspectorNames, Mode=TwoWay, UpdateSourceTrigger=LostFocus}"/>
                 </DataTemplate>
-                <DataTemplate x:Key="ShiftTemplate">
+                <DataTemplate x:Key="ShiftTemplate">    
                     <ComboBox SelectedValue="{Binding Path=Shift, Mode=TwoWay, UpdateSourceTrigger=LostFocus}" ItemsSource="{Binding ShiftOptions}" />
                 </DataTemplate>
                 <DataTemplate x:Key="TimeInTemplate">
-                    <TextBox Text="{Binding TimeIn, Mode=TwoWay, UpdateSourceTrigger=LostFocus, StringFormat=HH:mm}" PreviewTextInput="TextBox_PreviewTextInput"/>
+                    <TextBox Text="{Binding TimeIn, Mode=TwoWay, UpdateSourceTrigger=LostFocus, StringFormat=hh\\:mm}" PreviewTextInput="TextBox_PreviewTextInput"/>
                 </DataTemplate>
                 <DataTemplate x:Key="TimeOutTemplate">
-                    <TextBox Text="{Binding TimeOut, UpdateSourceTrigger=LostFocus, StringFormat=HH:mm}" PreviewTextInput="TextBox_PreviewTextInput"/>
+                    <TextBox Text="{Binding TimeOut, UpdateSourceTrigger=LostFocus, StringFormat=hh\\:mm}" PreviewTextInput="TextBox_PreviewTextInput"/>
                 </DataTemplate>
                 <DataTemplate x:Key="ActivityCodeTemplate">
                     <TextBox Text="{Binding ActivityCode, Mode=TwoWay, UpdateSourceTrigger=LostFocus}"/>

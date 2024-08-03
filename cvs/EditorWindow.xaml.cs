@@ -37,9 +37,10 @@ namespace cvs
         {
             TaskEditorViewModel viewModel = (TaskEditorViewModel)DataContext;
             string text = CvsSheetXmlSerializer.Serialize(viewModel.sheet);
-             //TaskEditorViewModel vm = (TaskEditorViewModel)this.DataContext;
-            //CvsSheet sheet = vm.sheet;
-            //File.WriteAllText("C:\\Users\\atoss\\Programming\\comparer\\output.txt", CvsSheetXmlSerializer.Serialize(sheet));
+            TaskEditorViewModel vm = (TaskEditorViewModel)this.DataContext;
+            CvsSheet sheet = vm.sheet;
+            string content = CvsSheetXmlSerializer.Serialize(sheet);
+            File.WriteAllText("C:\\Users\\atoss\\Programming\\comparer\\output.xml", content);
         }
 
         private void TextBox_PreviewTextInput(object sender, TextCompositionEventArgs e)
