@@ -44,9 +44,29 @@ namespace cvs
             TaskEditorViewModel vm = (TaskEditorViewModel)this.DataContext;
             CvsSheet sheet = vm.sheet;
             string content = CvsSheetXmlSerializer.Serialize(sheet);
+
+            string timeOfDay = "morning";
+            if (DateTime.Now.TimeOfDay.Hours >= 12)
+            {
+                timeOfDay = "afternoon";
+            }
+
+            string baseBody = "Good {0},\n\nSee attached the CVS sheet for the week of {1} (Week {2}).\n\nHave a great day,\n{3}";
+
+            DateTime useDate = DateTime.Now;
+            string nowDateStr = useDate.ToString("dddd MMMM dd, yyyy");
+            string nowWeekStr = WeekNumberCalculator.CalcWeekNumber(useDate).ToString();
+            string inspectorName = "Anthony";
+            string body = String.Format(baseBody, timeOfDay, nowDateStr, nowWeekStr, inspectorName);
+
+            string baseSubject = "CVS Sheet for {0} (Week {1})";
+            string subject = String.Format(baseSubject, nowDateStr, nowWeekStr);
+
             if ((bool)saveFileDialog.ShowDialog())
             {
-                File.WriteAllText(saveFileDialog.FileName, content);
+                string outputPath = saveFileDialog.FileName;
+                File.WriteAllText(outputPath, content);
+                OutlookEmailer.SendEmail("atossell91@gmail.com", "atossell91@outlook.com", subject, body, outputPath);
             }
         }
 
