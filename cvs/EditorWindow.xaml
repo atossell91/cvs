@@ -74,6 +74,6 @@
                 <DataGridTemplateColumn Header="Name(s)" CellTemplate="{StaticResource NamesTemplate}" MinWidth="120" CellStyle="{StaticResource GridRowStyle}"/>
             </DataGrid.Columns>
         </DataGrid>
-        <Button Grid.Row="1" Content="Serialize" Click="Button_Click" Height="60"/>
+        <Button Grid.Row="1" Content="Serialize" Command="{Binding saveSend}" Height="60"/>
     </StackPanel>
 </Window>
